@@ -1,35 +1,41 @@
-# Use Node.js as the base image
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-
-RUN npm ci
-
-# Set a build-time argument for OLLAMA_URL with a default value
-ARG OLLAMA_URL=http://127.0.0.1:11434
-ENV OLLAMA_URL=${OLLAMA_URL}
-
-COPY . .
-
-RUN npm run build
-
+# Gunakan image dasar Node.js, misalnya versi Alpine
 FROM node:20-alpine
 
+# Setel direktori kerja di dalam container
 WORKDIR /app
 
-# Copy built files from the builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/package-lock.json ./package-lock.json
-COPY --from=builder /app/node_modules ./node_modules
+# Pastikan kita memiliki tool yang dibutuhkan untuk instalasi Ollama
+RUN apk add --no-cache curl tar
 
-# Set environment variable with a default value that can be overridden at runtime
-ENV OLLAMA_URL=http://127.0.0.1:11434
-ENV PORT=3000
+# -----------------------
+# 1) Instalasi Ollama
+# -----------------------
+# Download file tar Ollama versi Linux AMD64
+RUN curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o /tmp/ollama-linux-amd64.tgz \
+    && tar -C /usr -xzf /tmp/ollama-linux-amd64.tgz \
+    && rm /tmp/ollama-linux-amd64.tgz
 
+# Notes:
+# - Jika perlu versi ARM64 (misal di Mac M1/M2), ganti tautan 
+#   ke ollama-linux-arm64.tgz.
+# - Jika Anda menggunakan GPU AMD, bisa menambahkan paket rocm 
+#   (ollama-linux-amd64-rocm.tgz) dengan perintah serupa.
+# - Tidak menambahkan systemd atau service agar Ollama TIDAK dijalankan otomatis.
+
+# -----------------------
+# 2) Instalasi Aplikasi
+# -----------------------
+# Salin file package.json dan package-lock.json (jika ada)
+COPY package*.json ./
+
+# Instal dependensi
+RUN npm install
+
+# Salin seluruh kode sumber ke dalam container
+COPY . .
+
+# Buka port aplikasi Next.js (misal di port 3000)
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Jalankan perintah default untuk Next.js
+CMD ["npm", "run", "dev"]
