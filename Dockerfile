@@ -1,41 +1,29 @@
-# Gunakan image dasar Node.js, misalnya versi Alpine
-FROM node:20-alpine
+# Gunakan image Node.js (alpine)
+FROM node:18-alpine
 
-# Setel direktori kerja di dalam container
+# Buat direktori kerja
 WORKDIR /app
 
-# Pastikan kita memiliki tool yang dibutuhkan untuk instalasi Ollama
-RUN apk add --no-cache curl tar
-
-# -----------------------
-# 1) Instalasi Ollama
-# -----------------------
-# Download file tar Ollama versi Linux AMD64
-RUN curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o /tmp/ollama-linux-amd64.tgz \
-    && tar -C /usr -xzf /tmp/ollama-linux-amd64.tgz \
-    && rm /tmp/ollama-linux-amd64.tgz
-
-# Notes:
-# - Jika perlu versi ARM64 (misal di Mac M1/M2), ganti tautan 
-#   ke ollama-linux-arm64.tgz.
-# - Jika Anda menggunakan GPU AMD, bisa menambahkan paket rocm 
-#   (ollama-linux-amd64-rocm.tgz) dengan perintah serupa.
-# - Tidak menambahkan systemd atau service agar Ollama TIDAK dijalankan otomatis.
-
-# -----------------------
-# 2) Instalasi Aplikasi
-# -----------------------
-# Salin file package.json dan package-lock.json (jika ada)
+# Salin file package.json dan package-lock.json (jika ada), lalu install dependency
 COPY package*.json ./
-
-# Instal dependensi
 RUN npm install
 
-# Salin seluruh kode sumber ke dalam container
+# Salin seluruh source code ke dalam container
 COPY . .
 
-# Buka port aplikasi Next.js (misal di port 3000)
+# Build aplikasi Next.js
+RUN npm run build
+
+# Install curl (jika belum tersedia) dan Ollama
+RUN apk add --no-cache curl bash &&
+    curl -fsSL https://ollama.com/install.sh | sh
+
+# Ekspos port Next.js
 EXPOSE 3000
 
-# Jalankan perintah default untuk Next.js
-CMD ["npm", "run", "dev"]
+# Salin script entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Jalankan script entrypoint
+CMD ["/entrypoint.sh"]
