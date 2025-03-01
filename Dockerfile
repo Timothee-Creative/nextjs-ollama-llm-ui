@@ -19,17 +19,8 @@ RUN npm run build
 # Install Ollama menggunakan script resmi
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
-# Buat skrip startup untuk menjalankan Ollama dan Next.js secara bersamaan
-RUN echo '#!/bin/sh\n\
-echo "Starting Ollama..."\n\
-# Jalankan Ollama di background\n\
-ollama serve &\n\
-echo "Starting Next.js..."\n\
-# Eksekusi Next.js sebagai proses utama\n\
-exec npm start' > /start.sh && chmod +x /start.sh
-
 # Expose port yang digunakan Next.js
 EXPOSE 3000
 
-# Gunakan skrip startup sebagai command utama container
-CMD ["/start.sh"]
+# Jalankan Ollama di background dan Next.js sebagai proses utama
+CMD sh -c "echo 'Starting Ollama...' && ollama serve & echo 'Starting Next.js...' && npm start"
