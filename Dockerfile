@@ -1,29 +1,35 @@
-# Gunakan image Node.js (alpine)
+# Gunakan image dasar yang sama (misalnya node:18-alpine)
 FROM node:18-alpine
 
-# Buat direktori kerja
+# Tambahkan paket yang diperlukan (curl, tar) untuk menginstall Ollama
+RUN apk add --no-cache curl tar
+
 WORKDIR /app
 
-# Salin file package.json dan package-lock.json (jika ada), lalu install dependency
-COPY package*.json ./
+# Salin file package.json dan package-lock.json (jika ada) lalu install dependency
+COPY package.json package-lock.json* ./
 RUN npm install
 
-# Salin seluruh source code ke dalam container
+# Salin seluruh kode Next.js ke dalam container
 COPY . .
 
 # Build aplikasi Next.js
 RUN npm run build
 
-# Install curl (jika belum tersedia) dan Ollama
-RUN apk add --no-cache curl bash &&
-    curl -fsSL https://ollama.com/install.sh | sh
+# Install Ollama menggunakan script resmi
+RUN curl -fsSL https://ollama.com/install.sh | sh
 
-# Ekspos port Next.js
+# Buat skrip startup untuk menjalankan Ollama dan Next.js secara bersamaan
+RUN echo '#!/bin/sh\n\
+echo "Starting Ollama..."\n\
+# Jalankan Ollama di background\n\
+ollama serve &\n\
+echo "Starting Next.js..."\n\
+# Eksekusi Next.js sebagai proses utama\n\
+exec npm start' > /start.sh && chmod +x /start.sh
+
+# Expose port yang digunakan Next.js
 EXPOSE 3000
 
-# Salin script entrypoint
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Jalankan script entrypoint
-CMD ["/entrypoint.sh"]
+# Gunakan skrip startup sebagai command utama container
+CMD ["/start.sh"]
