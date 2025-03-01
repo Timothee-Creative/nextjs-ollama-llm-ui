@@ -1,8 +1,8 @@
-# Gunakan image dasar yang sama (misalnya node:18-alpine)
-FROM node:18-alpine
+# Gunakan image dasar berbasis Debian agar mendukung glibc
+FROM node:18-bullseye-slim
 
 # Tambahkan paket yang diperlukan (curl, tar) untuk menginstall Ollama
-RUN apk add --no-cache curl tar
+RUN apt-get update && apt-get install -y curl tar && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
