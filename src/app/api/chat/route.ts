@@ -1,3 +1,4 @@
+// app/api/chat/route.ts
 import { createOllama } from 'ollama-ai-provider';
 import { streamText, convertToCoreMessages, CoreMessage, UserContent } from 'ai';
 

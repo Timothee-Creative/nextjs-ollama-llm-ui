@@ -1,3 +1,4 @@
+// components/pull-model.tsx
 import React from "react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 

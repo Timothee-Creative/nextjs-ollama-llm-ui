@@ -1,3 +1,4 @@
+// utils/initial-questions.ts
 export const INITIAL_QUESTIONS = [
   {
     content: "What is the capital of France?",

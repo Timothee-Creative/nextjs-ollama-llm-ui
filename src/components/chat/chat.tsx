@@ -1,3 +1,4 @@
+// components/chat/chat.tsx
 "use client";
 
 import ChatTopbar from "./chat-topbar";

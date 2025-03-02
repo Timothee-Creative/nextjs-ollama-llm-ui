@@ -1,3 +1,4 @@
+// app/hooks/useChatStore.ts
 import { CoreMessage, generateId, Message } from "ai";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";

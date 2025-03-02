@@ -1,3 +1,4 @@
+// components/emoji-picker.tsx
 'use client'
 
 import {

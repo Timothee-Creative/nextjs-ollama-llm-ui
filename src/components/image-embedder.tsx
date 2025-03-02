@@ -1,3 +1,4 @@
+// components/image-embedder.tsx
 "use client";
 
 import React, { useCallback } from "react";

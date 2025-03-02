@@ -1,3 +1,4 @@
+// components/chat/chat-message.tsx
 import React, { memo, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Markdown from "react-markdown";

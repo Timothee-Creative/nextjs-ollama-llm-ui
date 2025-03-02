@@ -1,3 +1,4 @@
+// components/ui/chat/expandable-chat.tsx
 "use client";
 
 import React, { useRef, useState } from "react";

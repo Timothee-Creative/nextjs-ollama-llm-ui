@@ -1,3 +1,4 @@
+// components/ui/chat/message-loading.tsx
 // @hidden
 export default function MessageLoading() {
   return (

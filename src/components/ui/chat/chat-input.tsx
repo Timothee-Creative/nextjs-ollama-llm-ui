@@ -1,3 +1,4 @@
+// components/ui/chat/chat-input.tsx
 import * as React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";

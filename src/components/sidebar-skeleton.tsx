@@ -1,3 +1,4 @@
+// components/sidebar-skeleton.tsx
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SidebarSkeleton() {

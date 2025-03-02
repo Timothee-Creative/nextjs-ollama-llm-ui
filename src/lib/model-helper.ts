@@ -1,3 +1,4 @@
+// lib/model-helper.ts
 export function getSelectedModel(): string {
     if (typeof window !== 'undefined') {
       const storedModel = localStorage.getItem('selectedModel');

@@ -1,3 +1,4 @@
+// components/chat/chat-bottombar.tsx
 "use client";
 
 import React, { useEffect } from "react";

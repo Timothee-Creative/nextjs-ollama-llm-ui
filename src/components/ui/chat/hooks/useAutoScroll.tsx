@@ -1,3 +1,4 @@
+// components/ui/chat/hooks/useAutoScroll.tsx
 // @hidden
 import { useCallback, useEffect, useRef, useState } from "react";
 

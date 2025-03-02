@@ -1,3 +1,4 @@
+// components/chat/chat-list.tsx
 import { Message } from "ai/react";
 import React from "react";
 import ChatMessage from "./chat-message";
